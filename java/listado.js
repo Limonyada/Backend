@@ -1,5 +1,5 @@
 const URL = "http://127.0.0.1:5000/"
-//listado
+//listado de libros
 
 fetch(URL + 'libros') //http://127.0.0.1:5000/libros
             .then(function (response) {
@@ -8,7 +8,7 @@ fetch(URL + 'libros') //http://127.0.0.1:5000/libros
                     return response.json(); 
             } else {
                     // Si hubo un error, lanzar explícitamente una excepción para ser "catcheada" más adelante
-                    throw new Error('Error al obtener los libros.');
+                    throw new Error('Error al obtener los os.');
                 }
             })
 
@@ -29,29 +29,7 @@ fetch(URL + 'libros') //http://127.0.0.1:5000/libros
 
                 }
             })
-
             .catch(function (error) {
                 // Código para manejar errores
                 alert('Error al obtener los libros.');
             });
-
-function eliminarlibro(isbn) {
-            // Se muestra un diálogo de confirmación. Si el usuario confirma, se realiza una solicitud DELETE al servidor a través de fetch(URL + 'libros/${isbn}', {method: 'DELETE' }).
-            if (confirm('¿Estás seguro de que quieres eliminar este libro?')) {
-                fetch(URL + `libros/${isbn}`, { method: 'DELETE' })
-                    .then(response => {
-                        if (response.ok) {
-                            // Si es exitosa (response.ok), elimina el libro y da mensaje de ok.
-                            obtenerlibros(); // Vuelve a obtener la lista de libros para actualizar la tabla.
-                            alert('libro eliminado correctamente.');
-                        }
-                    })
-                    // En caso de error, mostramos una alerta con un mensaje de error.
-                    .catch(error => {
-                        alert(error.message);
-                    });
-            }
-        }
-
-        // Cuando la página se carga, llama a obtenerlibros para cargar la lista de libros.
-        document.addEventListener('DOMContentLoaded', obtenerlibros);
