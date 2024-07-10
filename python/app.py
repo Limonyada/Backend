@@ -92,7 +92,7 @@ class libreria:
 
 biblioteca = libreria(host='localhost', user='root', password='', database='miapp')
 
-ruta_img = '/imag'
+ruta_img = 'img/'
 
 @app.route("/libros", methods=["GET"])
 def listar_libros():
