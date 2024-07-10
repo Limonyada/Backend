@@ -48,31 +48,21 @@ class libreria:
         self.cursor.execute(sql,valores)        
         self.conn.commit()
         return self.cursor.lastrowid
-    
-
-
-
-
-
-
     def consultar_libro(self, isbn):
-        self.conector.execute(f"SELECT * FROM libros WHERE isbn = {isbn}")
-        return self.conector.fetchone()
+        self.cursor.execute(f"SELECT * FROM libros WHERE isbn = {isbn}")
+        return self.cursor.fetchone()
+   
     def cambiar_libro(self, isbn, ntitulo, npaginas, nprecio, nimagen):
-        sql = f"UPDATE libros SET \
-                    titulo = %s, \
-                    paginas = %s, \
-                    precio = %s, \
-                    imagen_url = %s, \
-                WHERE isbn = {isbn}"
-        valores=(ntitulo,npaginas,nprecio,nimagen)
-        self.conector.execute(sql,valores)
+        sql = "UPDATE libros SET titulo = %s, paginas = %s, precio = %s, imagen_url = %s WHERE isbn = %s"
+        valores = (ntitulo, npaginas, nprecio, nimagen, isbn)
+        self.cursor.execute(sql, valores)
         self.conn.commit()
-        return self.conector.rowcount > 0
+        return self.cursor.rowcount > 0
+
     def eliminar_libro(self, isbn):
-        self.conector.execute(f"DELETE FROM libros WHERE isbn = {isbn}")
+        self.cursor.execute(f"DELETE FROM libros WHERE isbn = {isbn}")
         self.conn.commit()
-        return self.conector.rowcount > 0
+        return self.cursor.rowcount > 0
     def ver_delibros(self, isbn):
         libro = self.consultar_libro(isbn)
         if libro:
@@ -127,41 +117,71 @@ def agregar_libro():
     else:
         return jsonify({"mensaje": "El libro ya existe"}), 400
     
-@app.route("/libros/<int:codigo>", methods=["DELETE"])
-def eliminar_libro(isbn):
+@app.route("/libros/<int:isbn>", methods=["DELETE"])
 
+def eliminar_libro(isbn):
     libro = biblioteca.consultar_libro(isbn)
     if libro:
-        ruta_imagen = os.path.join(ruta_img, libro['imagen_url'])
+        imagen_vieja = libro["imagen_url"]
+        ruta_imagen = os.path.join(ruta_img, imagen_vieja)
+
         if os.path.exists(ruta_imagen):
             os.remove(ruta_imagen)
 
         if biblioteca.eliminar_libro(isbn):
-            return jsonify({"mensaje": "libro eliminado"}), 200
+            return jsonify({"mensaje": "El libro fue eliminado"}), 200
         else:
             return jsonify({"mensaje": "Error al eliminar el libro"}), 500
     else:
+       
         return jsonify({"mensaje": "libro no encontrado"}), 404
 
 
 @app.route("/libros/<int:isbn>", methods=["PUT"])
-def cambiar_libro(isbn):
 
+def cambiar_libro(isbn):
     ntitulo = request.form.get("titulo")
     npaginas = request.form.get("paginas")
     nprecio = request.form.get("precio")
-    nimagen = request.files['imagen']
-    nombre_imagen = secure_filename(nimagen.filename)
-    nombre_base, extension = os.path.splitext(nombre_imagen)
-    nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
-    nimagen.save(os.path.join(ruta_img, nombre_imagen))
     
-    if biblioteca.modificar_libro(isbn, ntitulo, npaginas, nprecio, nombre_imagen):
+    
+    # Verifica si se proporcionó una nueva imagen
+    if 'imagen' in request.files:
+        imagen = request.files['imagen']
+        # Procesamiento de la imagen
+        nombre_imagen = secure_filename(imagen.filename) #Chequea el nombre del archivo de la imagen, asegurándose de que sea seguro para guardar en el sistema de archivos
+        nombre_base, extension = os.path.splitext(nombre_imagen) #Separa el nombre del archivo de su extensión.
+        nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}" #Genera un nuevo nombre para la imagen usando un timestamp, para evitar sobreescrituras y conflictos de nombres.
+
+        # Guardar la imagen en el servidor
+        imagen.save(os.path.join(ruta_img, nombre_imagen))
+        
+        # Busco el libro guardado
+        libro = biblioteca.consultar_libro(isbn)
+        if libro: # Si existe el libro...
+            imagen_vieja = libro["imagen_url"]
+            # Armo la ruta a la imagen
+            ruta_imagen = os.path.join(ruta_img, imagen_vieja)
+
+            # Y si existe la borro.
+            if os.path.exists(ruta_imagen):
+                os.remove(ruta_imagen)
+    
+    else:
+        # Si no se proporciona una nueva imagen, simplemente usa la imagen existente del libro
+        libro = biblioteca.consultar_libro(isbn)
+        if libro:
+            nimagen = libro["imagen_url"]
+
+
+    # Se llama al método cambiar_libro pasando el isbn del libro y los nuevos datos.
+    if biblioteca.cambiar_libro(isbn, ntitulo, npaginas, nprecio, nimagen):
+        
+        #Si la actualización es exitosa, se devuelve una respuesta JSON con un mensaje de éxito y un código de estado HTTP 200 (OK).
         return jsonify({"mensaje": "libro modificado"}), 200
     else:
+        #Si el libro no se encuentra (por ejemplo, si no hay ningún libro con el código dado), se devuelve un mensaje de error con un código de estado HTTP 404 (No Encontrado).
         return jsonify({"mensaje": "libro no encontrado"}), 404
-
-
 
 #biblioteca.agregar_libro("harry poter",716,3500,"rayito")
 #biblioteca.lista_delibros(1)
