@@ -5,42 +5,45 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar libro 🚀</title>
-    <link rel="stylesheet" href="./static/css/estilos.css">
+    <title>Agregar un libro 📖</title>
+    <link rel="stylesheet" href="static/estilos.css">
 </head>
 
 <body>
     <header>
         <nav class="navbar-index ">
-            <img class="logo-nav" src="./static/imagenesEjemplo/logos-nav.webp" alt="logo agencia de aprendizaje">
+            <img class="logo-nav" src="imagenesG/logo del libro.webp" alt="logo agencia de aprendizaje">
         </nav>
     </header>
 
     <div class="logo-centrado">
-        <img src="./static/imagenesEjemplo/logo_Codo.jpg" alt="logo">
+        <img src="imagenesG/logo.png" alt="logo">
     </div>
-    <h1>Agregar libros al Inventario</h1><br>
 
+    <h1>Agregar un libro al Repositorio</h1><br>
+
+ 
     <form id="formulario" enctype="multipart/form-data">
         
-        <label for="titulo">Titulo:</label>
-        <input type="text" id="titulo" name="titulo" required><br>
+        <label for="descripcion">Título:</label>
+        <input type="text" id="descripcion" name="descripcion" required><br>
 
-        <label for="paginas">Paginas:</label>
-        <input type="number" id="paginas" name="paginas" required><br>
+        <label for="cantidad">Páginas:</label>
+        <input type="number" id="cantidad" name="cantidad" required><br>
 
         <label for="precio">Precio:</label>
         <input type="number" step="0.01" id="precio" name="precio" required><br>
 
-        <label for="imagenlibro">Imagen del libro:</label>
-        <input type="file" id="imagenlibro" name="imagen">
+        <label for="imagenProducto">Imagen del Libro:</label>
+        <input type="file" id="imagenProducto" name="imagen">
 
         <br><br>
-        
-        <button type="submit">Agregar libro</button>
+
+        <button type="submit">Agregar Libro</button>
         <a href="index.html">Menu principal</a>
     </form>
-<script src="java/agre.js"> </script>
+
+    <script src="java/agre.js"></script>
 </body>
 
 </html>
