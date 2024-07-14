@@ -80,9 +80,9 @@ class libreria:
         libros = self.cursor.fetchall()
         return libros
 
-biblioteca = libreria(host='localhost', user='root', password='', database='miapp')
+biblioteca = libreria(host='lucasacosta.mysql.pythonanywhere-services.com', user='lucasacosta', password='Libro*1324', database='lucasacosta$miapp')
 
-ruta_img = 'imgenesG/'
+ruta_img = '/home/lucasacosta/mysite/imagenesG/'
 
 @app.route("/libros", methods=["GET"])
 def listar_libros():
