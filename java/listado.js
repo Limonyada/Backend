@@ -16,12 +16,12 @@ fetch(URL + 'libros') //http://127.0.0.1:5000/libros
                 let listalibros = document.getElementById('listalibros');
 
                 for (let libro of datos) {
-                    let lis = document.createElement('ol'); 
-                    lis.innerHTML = '<li>' + libro.isbn + '</li>' +
-                        '<li>' + libro.titulo+ '</li>' +
-                        '<li>' + libro.paginas + '</li>' +
-                        '<li>' + libro.precio + '</li>' +
-                        '<li><img src=static/imagenes/' + libro.imagen_url +' alt="Imagen del libro" style="width: 300px;"></li>';
+                    let lis = document.createElement('tr'); 
+                    lis.innerHTML = '<td>' + libro.isbn + '</td>' +
+                        '<td>' + libro.titulo+ '</td>' +
+                        '<td>' + libro.paginas + '</td>' +
+                        '<td>' + libro.precio + '</td>' +
+                        '<td><img src=static/imagenes/' + libro.imagen_url +' alt="Imagen del libro" style="width: 300px;"></td>';
                 
                         //Al subir al servidor, deberá utilizarse la siguiente ruta. USUARIO debe ser reemplazado por el nombre de usuario de Pythonanywhere
                         //'<td><img src=https://www.pythonanywhere.com/user/USUARIO/files/home/USUARIO/mysite/static/imagenes/' + libro.imagen_url +' alt="Imagen del libro" style="width: 100px;"></td>' + '<td align="right">' + libro.proveedor + '</td>';
